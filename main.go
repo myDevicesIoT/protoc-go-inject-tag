@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	var inputFile string
+	var inputFiles string
 	var xxxTags string
-	flag.StringVar(&inputFile, "input", "", "path to input file")
+	flag.StringVar(&inputFiles, "input", "", "path to input file")
 	flag.StringVar(&xxxTags, "XXX_skip", "", "skip tags to inject on XXX fields")
 	flag.BoolVar(&verbose, "verbose", false, "verbose logging")
 
@@ -20,15 +20,17 @@ func main() {
 		xxxSkipSlice = strings.Split(xxxTags, ",")
 	}
 
-	if len(inputFile) == 0 {
+	if len(inputFiles) == 0 {
 		log.Fatal("input file is mandatory")
 	}
 
-	areas, err := parseFile(inputFile, xxxSkipSlice)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err = writeFile(inputFile, areas); err != nil {
-		log.Fatal(err)
+	for _, inputFile := range strings.Split(inputFiles, " ") {
+		areas, err := parseFile(inputFile, xxxSkipSlice)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err = writeFile(inputFile, areas); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
